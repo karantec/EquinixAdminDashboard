@@ -1,117 +1,155 @@
-import { themeChange } from 'theme-change'
-import React, {  useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import BellIcon  from '@heroicons/react/24/outline/BellIcon'
-import Bars3Icon  from '@heroicons/react/24/outline/Bars3Icon'
-import MoonIcon from '@heroicons/react/24/outline/MoonIcon'
-import SunIcon from '@heroicons/react/24/outline/SunIcon'
-import { openRightDrawer } from '../features/common/rightDrawerSlice';
-import { RIGHT_DRAWER_TYPES } from '../utils/globalConstantUtil'
+import { themeChange } from "theme-change";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import BellIcon from "@heroicons/react/24/outline/BellIcon";
+import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
+import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
+import Squares2X2Icon from "@heroicons/react/24/outline/Squares2X2Icon";
+import ChevronDownIcon from "@heroicons/react/24/outline/ChevronDownIcon";
+import { openRightDrawer } from "../features/common/rightDrawerSlice";
+import { RIGHT_DRAWER_TYPES } from "../utils/globalConstantUtil";
+import { NavLink, Routes, Link, useLocation } from "react-router-dom";
 
-import { NavLink,  Routes, Link , useLocation} from 'react-router-dom'
+function Header() {
+  const dispatch = useDispatch();
+  const { noOfNotifications, pageTitle } = useSelector((state) => state.header);
+  const [currentTheme, setCurrentTheme] = useState(
+    localStorage.getItem("theme")
+  );
 
-
-function Header(){
-
-    const dispatch = useDispatch()
-    const {noOfNotifications, pageTitle} = useSelector(state => state.header)
-    const [currentTheme, setCurrentTheme] = useState(localStorage.getItem("theme"))
-
-    useEffect(() => {
-        themeChange(false)
-        if(currentTheme === null){
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ) {
-                setCurrentTheme("dark")
-            }else{
-                setCurrentTheme("light")
-            }
-        }
-        // 👆 false parameter is required for react project
-      }, [])
-
-
-    // Opening right sidebar for notification
-    const openNotification = () => {
-        dispatch(openRightDrawer({header : "Notifications", bodyType : RIGHT_DRAWER_TYPES.NOTIFICATION}))
+  useEffect(() => {
+    themeChange(false);
+    if (currentTheme === null) {
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        setCurrentTheme("dark");
+      } else {
+        setCurrentTheme("light");
+      }
     }
+  }, []);
 
+  const openNotification = () => {
+    dispatch(
+      openRightDrawer({
+        header: "Notifications",
+        bodyType: RIGHT_DRAWER_TYPES.NOTIFICATION,
+      })
+    );
+  };
 
-    function logoutUser(){
-        localStorage.clear();
-        window.location.href = '/'
-    }
+  function logoutUser() {
+    localStorage.clear();
+    window.location.href = "/";
+  }
 
-    return(
-        // navbar fixed  flex-none justify-between bg-base-300  z-10 shadow-md
-        
-        <>
-            <div className="navbar sticky top-0 bg-base-100  z-10 shadow-md ">
+  return (
+    <>
+      <div className="navbar sticky top-0 bg-white z-10 shadow-sm border-b border-gray-200 px-6 h-16">
+        {/* Left Section - Menu toggle and Search */}
+        <div className="flex-1 flex items-center gap-4">
+          {/* Mobile menu toggle */}
+          <label
+            htmlFor="left-sidebar-drawer"
+            className="btn btn-ghost btn-circle lg:hidden"
+          >
+            <Bars3Icon className="h-6 w-6 text-gray-600" />
+          </label>
 
-
-                {/* Menu toogle for mobile view or small screen */}
-                <div className="flex-1">
-                    <label htmlFor="left-sidebar-drawer" className="btn btn-primary drawer-button lg:hidden">
-                    <Bars3Icon className="h-5 inline-block w-5"/></label>
-                    <h1 className="text-2xl font-semibold ml-2">{pageTitle}</h1>
-                </div>
-
-                
-
-            <div className="flex-none ">
-
-                {/* Multiple theme selection, uncomment this if you want to enable multiple themes selection, 
-                also includes corporate and retro themes in tailwind.config file */}
-                
-                {/* <select className="select select-sm mr-4" data-choose-theme>
-                    <option disabled selected>Theme</option>
-                    <option value="light">Default</option>
-                    <option value="dark">Dark</option>
-                    <option value="corporate">Corporate</option>
-                    <option value="retro">Retro</option>
-                </select> */}
-
-
-            {/* Light and dark theme selection toogle **/}
-            <label className="swap ">
-                <input type="checkbox"/>
-                <SunIcon data-set-theme="light" data-act-class="ACTIVECLASS" className={"fill-current w-6 h-6 "+(currentTheme === "dark" ? "swap-on" : "swap-off")}/>
-                <MoonIcon data-set-theme="dark" data-act-class="ACTIVECLASS" className={"fill-current w-6 h-6 "+(currentTheme === "light" ? "swap-on" : "swap-off")} />
-            </label>
-
-
-                {/* Notification icon */}
-                <button className="btn btn-ghost ml-4  btn-circle" onClick={() => openNotification()}>
-                    <div className="indicator">
-                        <BellIcon className="h-6 w-6"/>
-                        {noOfNotifications > 0 ? <span className="indicator-item badge badge-secondary badge-sm">{noOfNotifications}</span> : null }
-                    </div>
-                </button>
-
-
-                {/* Profile icon, opening menu on click */}
-                <div className="dropdown dropdown-end ml-4">
-                    <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                        <div className="w-10 rounded-full">
-                        <img src="https://placeimg.com/80/80/people" alt="profile" />
-                        </div>
-                    </label>
-                    <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-                        <li className="justify-between">
-                        <Link to={'/app/settings-profile'}>
-                            Profile Settings
-                            <span className="badge">New</span>
-                            </Link>
-                        </li>
-                        <li className=''><Link to={'/app/settings-billing'}>Bill History</Link></li>
-                        <div className="divider mt-0 mb-0"></div>
-                        <li><a onClick={logoutUser}>Logout</a></li>
-                    </ul>
-                </div>
+          {/* Search Bar */}
+          <div className="relative hidden md:block">
+            <div className="flex items-center bg-gray-50 rounded-lg px-4 py-2 w-80">
+              <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 mr-2" />
+              <input
+                type="text"
+                placeholder="Search"
+                className="bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400 w-full"
+              />
             </div>
-            </div>
+          </div>
+        </div>
 
-        </>
-    )
+        {/* Right Section - Icons and Profile */}
+        <div className="flex-none">
+          <div className="flex items-center gap-2">
+            {/* Grid Icon */}
+            <button className="btn btn-ghost btn-circle">
+              <Squares2X2Icon className="h-6 w-6 text-gray-600" />
+            </button>
+
+            {/* Notification Bell */}
+            <button
+              className="btn btn-ghost btn-circle relative"
+              onClick={() => openNotification()}
+            >
+              <BellIcon className="h-6 w-6 text-gray-600" />
+              {noOfNotifications > 0 ? (
+                <span className="absolute top-2 right-2 flex h-4 w-4 items-center justify-center">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 text-[8px] text-white items-center justify-center font-bold">
+                    {noOfNotifications}
+                  </span>
+                </span>
+              ) : null}
+            </button>
+
+            {/* Profile Dropdown */}
+            <div className="dropdown dropdown-end ml-2">
+              <label
+                tabIndex={0}
+                className="btn btn-ghost rounded-lg px-3 py-2 h-auto min-h-0 hover:bg-gray-50"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold text-sm">
+                    V
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 hidden lg:block">
+                    Vasudevdas
+                  </span>
+                  <ChevronDownIcon className="h-4 w-4 text-gray-500 hidden lg:block" />
+                </div>
+              </label>
+              <ul
+                tabIndex={0}
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow-lg bg-white rounded-lg w-52 border border-gray-200"
+              >
+                <li>
+                  <Link
+                    to={"/app/settings-profile"}
+                    className="text-gray-700 hover:bg-gray-50"
+                  >
+                    Profile Settings
+                    <span className="badge badge-sm bg-blue-500 text-white border-none">
+                      New
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/app/settings-billing"}
+                    className="text-gray-700 hover:bg-gray-50"
+                  >
+                    Bill History
+                  </Link>
+                </li>
+                <div className="divider my-1"></div>
+                <li>
+                  <a
+                    onClick={logoutUser}
+                    className="text-red-600 hover:bg-red-50"
+                  >
+                    Logout
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
-export default Header
+export default Header;
