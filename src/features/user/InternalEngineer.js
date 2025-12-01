@@ -90,7 +90,7 @@ function InternalEngineer() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
@@ -185,7 +185,7 @@ function InternalEngineer() {
 
       {/* Create Internal Engineer Account Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
             {/* Header */}
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
@@ -275,7 +275,7 @@ function InternalEngineer() {
 
       {/* OTP Verification Modal */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
             {/* Header */}
             <div className="flex justify-between items-center p-4 border-b border-gray-200">

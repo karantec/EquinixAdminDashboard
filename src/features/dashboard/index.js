@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 
 function Dashboard() {
   // Sample visitor data
@@ -58,14 +58,14 @@ function Dashboard() {
   ];
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 ">
         <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 mb-8">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 mb-8 ">
         {/* Today Visitors Card */}
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between mb-4">
@@ -98,7 +98,7 @@ function Dashboard() {
                     idx === chartData.length - 1 ? "bg-gray-800" : "bg-gray-300"
                   } rounded-sm`}
                   style={{ height: `${(height / 65) * 100}%` }}
-                ></div>
+                />
               ))}
             </div>
           </div>
@@ -238,7 +238,7 @@ function Dashboard() {
           </table>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

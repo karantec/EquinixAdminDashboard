@@ -13,23 +13,23 @@ import { NavLink, Routes, Link, useLocation } from "react-router-dom";
 function Header() {
   const dispatch = useDispatch();
   const { noOfNotifications, pageTitle } = useSelector((state) => state.header);
-  const [currentTheme, setCurrentTheme] = useState(
-    localStorage.getItem("theme")
-  );
+  // const [currentTheme, setCurrentTheme] = useState(
+  //   localStorage.getItem("theme")
+  // );
 
-  useEffect(() => {
-    themeChange(false);
-    if (currentTheme === null) {
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        setCurrentTheme("dark");
-      } else {
-        setCurrentTheme("light");
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   themeChange(false);
+  //   if (currentTheme === null) {
+  //     if (
+  //       window.matchMedia &&
+  //       window.matchMedia("(prefers-color-scheme: dark)").matches
+  //     ) {
+  //       setCurrentTheme("dark");
+  //     } else {
+  //       setCurrentTheme("light");
+  //     }
+  //   }
+  // }, []);
 
   const openNotification = () => {
     dispatch(

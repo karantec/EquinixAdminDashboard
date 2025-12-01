@@ -320,7 +320,7 @@ function CabinetUpdates() {
 
       {/* Deny Confirmation Modal */}
       {showDenyModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-6">
             <h3 className="text-base font-semibold text-gray-800 mb-4 text-center">
               Are you sure want to denied?
@@ -345,7 +345,7 @@ function CabinetUpdates() {
 
       {/* Reason Modal */}
       {showReasonModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-6">
             <h3 className="text-base font-semibold text-gray-800 mb-4">
               Add reason for denied
@@ -368,7 +368,7 @@ function CabinetUpdates() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-6">
             <h3 className="text-base font-semibold text-gray-800 mb-1 text-center">
               Reason?
@@ -388,7 +388,7 @@ function CabinetUpdates() {
 
       {/* Success Modal */}
       {showSuccessModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-8">
             <h3 className="text-lg font-semibold text-gray-800 text-center">
               Request Cancelled Successfully!
