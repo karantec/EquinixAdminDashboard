@@ -55,7 +55,7 @@ function LeftSidebar() {
                     `group flex items-center gap-3 px-4 py-3 rounded-lg mx-2 transition-all duration-200
       ${
         isActive
-          ? "bg-red-500 text-white shadow-md hover:bg-red-600"
+          ? "bg-red-500 shadow-md hover:bg-red-600 text-white"
           : "text-gray-700 hover:bg-red-500 hover:text-white"
       }
     `
