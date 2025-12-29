@@ -39,7 +39,16 @@ function InternalEngineer() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [otpMethod, setOtpMethod] = useState(""); // 'email' or 'phone'
+  const [otpStep, setOtpStep] = useState(1); // Added missing state
+
+  // Form state for new account creation
+  const [formData, setFormData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
   const handleEdit = (id) => {
     setCredentials(
@@ -55,7 +64,6 @@ function InternalEngineer() {
       newOtp[index] = value;
       setOtp(newOtp);
 
-      // Auto-focus next input
       if (value && index < 5) {
         const nextInput = document.getElementById(`otp-${index + 1}`);
         if (nextInput) nextInput.focus();
@@ -71,22 +79,63 @@ function InternalEngineer() {
   };
 
   const handleCreateSubmit = () => {
+    // Validate form
+    if (
+      !formData.name ||
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
     setShowCreateModal(false);
     setShowOtpModal(true);
+    setOtpStep(1);
   };
 
   const handleOtpSubmit = () => {
-    // Handle OTP verification
-    console.log("OTP:", otp.join(""));
-    console.log("Method:", otpMethod);
-    setShowOtpModal(false);
-    setOtp(["", "", "", "", "", ""]);
-    setOtpMethod("");
+    const otpCode = otp.join("");
+
+    if (otpCode.length !== 6) {
+      alert("Please enter complete OTP");
+      return;
+    }
+
+    console.log("OTP:", otpCode);
+
+    if (otpStep === 1) {
+      // Move to phone verification
+      setOtpStep(2);
+      setOtp(["", "", "", "", "", ""]);
+    } else {
+      // Complete verification
+      alert("Account created successfully!");
+      setShowOtpModal(false);
+      setOtp(["", "", "", "", "", ""]);
+      setOtpStep(1);
+      setFormData({
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
   };
 
-  const handleResendOtp = () => {
-    console.log("Resending OTP via:", otpMethod);
-    setOtp(["", "", "", "", "", ""]);
+  const handleFormChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   return (
@@ -118,11 +167,11 @@ function InternalEngineer() {
       </div>
 
       {/* Credentials Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {credentials.map((cred) => (
           <div
             key={cred.id}
-            className={`bg-white rounded-lg shadow-md p-6 ${
+            className={`bg-white rounded-lg shadow-md p-6 w-full ${
               cred.id === 1
                 ? "border-2 border-blue-500"
                 : "border border-gray-200"
@@ -132,69 +181,78 @@ function InternalEngineer() {
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               {cred.company}
             </h3>
+            <hr className="mb-4" />
 
             {/* Credentials Details */}
-            <div className="space-y-3 mb-4">
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">
+            <div className="space-y-3 mb-6">
+              <div className="flex">
+                <span className="text-gray-400 text-sm w-24 flex-shrink-0">
                   Username
-                </label>
-                <p className="text-sm text-gray-800">{cred.username}</p>
+                </span>
+                <span className="text-gray-400 text-sm mr-2">:</span>
+                <span className="text-gray-800 text-sm font-medium">
+                  {cred.username}
+                </span>
               </div>
 
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">
+              <div className="flex">
+                <span className="text-gray-400 text-sm w-24 flex-shrink-0">
                   Password
-                </label>
-                <p className="text-sm text-gray-800">{cred.password}</p>
+                </span>
+                <span className="text-gray-400 text-sm mr-2">:</span>
+                <span className="text-gray-800 text-sm font-medium">
+                  {cred.password}
+                </span>
               </div>
 
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">
+              <div className="flex">
+                <span className="text-gray-400 text-sm w-24 flex-shrink-0">
                   Email
-                </label>
-                <p className="text-sm text-gray-800 break-words">
+                </span>
+                <span className="text-gray-400 text-sm mr-2">:</span>
+                <span className="text-gray-800 text-sm font-medium break-all">
                   {cred.email}
-                </p>
+                </span>
               </div>
             </div>
 
             {/* Edit Button */}
-            <button
-              onClick={() => handleEdit(cred.id)}
-              className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded text-sm font-medium flex items-center justify-center gap-2"
-            >
-              Edit
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <div className="flex justify-end">
+              <button
+                onClick={() => handleEdit(cred.id)}
+                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center gap-2"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                />
-              </svg>
-            </button>
+                Edit
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Create Internal Engineer Account Modal */}
+      {/* Create New Account Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
-            {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-800">
-                Create Internal Engineer Account
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h2 className="text-2xl font-semibold text-red-600">
+                Create Internal engineer
               </h2>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-white bg-gray-500 hover:bg-gray-600 rounded-full p-1"
               >
                 <svg
                   className="w-5 h-5"
@@ -212,59 +270,82 @@ function InternalEngineer() {
               </button>
             </div>
 
-            {/* Form */}
-            <div className="p-4 space-y-3">
+            <div className="p-6 space-y-4">
               <div>
+                <label className="block text-xs text-gray-600 mb-1.5">
+                  Name
+                </label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                  placeholder="Name"
+                  value={formData.name}
+                  onChange={(e) => handleFormChange("name", e.target.value)}
+                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Karna"
+                  required
                 />
               </div>
 
               <div>
+                <label className="block text-xs text-gray-600 mb-1.5">
+                  User Name
+                </label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                  placeholder="Employee Id"
+                  value={formData.username}
+                  onChange={(e) => handleFormChange("username", e.target.value)}
+                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="AVC793-34"
+                  required
                 />
               </div>
 
               <div>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                  placeholder="Phone Number"
-                />
-              </div>
-
-              <div>
+                <label className="block text-xs text-gray-600 mb-1.5">
+                  Email ID
+                </label>
                 <input
                   type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                  placeholder="Email"
+                  value={formData.email}
+                  onChange={(e) => handleFormChange("email", e.target.value)}
+                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="engineer@example.com"
+                  required
                 />
               </div>
 
               <div>
+                <label className="block text-xs text-gray-600 mb-1.5">
+                  Password
+                </label>
                 <input
                   type="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                  placeholder="Password"
+                  value={formData.password}
+                  onChange={(e) => handleFormChange("password", e.target.value)}
+                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Create a password"
+                  required
                 />
               </div>
 
               <div>
+                <label className="block text-xs text-gray-600 mb-1.5">
+                  Confirm Password
+                </label>
                 <input
                   type="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
-                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    handleFormChange("confirmPassword", e.target.value)
+                  }
+                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Re-enter password"
+                  required
                 />
               </div>
 
               <button
                 onClick={handleCreateSubmit}
-                className="w-full bg-red-500 hover:bg-red-600 text-white py-2.5 px-4 rounded font-medium text-sm mt-2"
+                className="w-full bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded font-medium text-sm mt-4"
               >
                 Send OTP Code
               </button>
@@ -275,20 +356,20 @@ function InternalEngineer() {
 
       {/* OTP Verification Modal */}
       {showOtpModal && (
-        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-sm">
-            {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-800">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+            {/* Header with Close Button */}
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-2xl font-semibold text-red-500">
                 Verify OTP
               </h2>
               <button
                 onClick={() => {
                   setShowOtpModal(false);
                   setOtp(["", "", "", "", "", ""]);
-                  setOtpMethod("");
+                  setOtpStep(1);
                 }}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full p-1"
               >
                 <svg
                   className="w-5 h-5"
@@ -306,59 +387,87 @@ function InternalEngineer() {
               </button>
             </div>
 
-            {/* OTP Form */}
-            <div className="p-6">
-              <p className="text-sm text-gray-600 mb-6 text-center">
-                We have sent you OTP code on your phone
-              </p>
+            {/* Description */}
+            <p className="text-sm text-gray-600 mb-8">
+              {otpStep === 1
+                ? "We will send 6 digits of OTP to your email id prudhviraj*****.com"
+                : "We will send 6 digits of OTP to your phone 181 7868****56"}
+            </p>
 
-              {/* OTP Input Boxes */}
-              <div className="flex justify-center gap-2 mb-6">
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    id={`otp-${index}`}
-                    type="text"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(index, e.target.value)}
-                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                    className="w-12 h-12 text-center text-xl font-semibold border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                  />
-                ))}
+            {/* OTP Input Boxes */}
+            <div className="flex justify-center gap-3 mb-6">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  id={`otp-${index}`}
+                  type="text"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                  className="w-14 h-14 text-center text-2xl font-semibold bg-gray-100 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-800"
+                  required
+                />
+              ))}
+            </div>
+
+            {/* Resend OTP */}
+            <div className="text-right mb-6">
+              <button
+                type="button"
+                className="text-sm text-red-500 hover:text-red-600 font-medium"
+              >
+                Resend OTP?
+              </button>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={handleOtpSubmit}
+              className="w-full bg-red-500 hover:bg-red-600 text-white py-3.5 px-4 rounded-lg font-medium text-base mb-6"
+            >
+              Enter OTP
+            </button>
+
+            {/* Step Indicators */}
+            <div className="flex items-center justify-center gap-6">
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${
+                    otpStep === 1 ? "bg-red-500" : "bg-green-500"
+                  }`}
+                >
+                  {otpStep === 1 ? "1" : "✓"}
+                </div>
+                <span
+                  className={`text-sm ${
+                    otpStep === 1
+                      ? "text-gray-800 font-medium"
+                      : "text-gray-600"
+                  }`}
+                >
+                  Verify Email
+                </span>
+                <span className="text-gray-400">-----&gt;</span>
               </div>
 
-              <button
-                onClick={handleOtpSubmit}
-                className="w-full bg-red-500 hover:bg-red-600 text-white py-2.5 px-4 rounded font-medium text-sm mb-4"
-              >
-                Verify OTP
-              </button>
-
-              {/* Send Via Options */}
-              <div className="flex justify-center gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="otpMethod"
-                    value="email"
-                    checked={otpMethod === "email"}
-                    onChange={(e) => setOtpMethod(e.target.value)}
-                    className="w-4 h-4 text-green-500 accent-green-500"
-                  />
-                  <span className="text-sm text-gray-700">Send Email</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="otpMethod"
-                    value="phone"
-                    checked={otpMethod === "phone"}
-                    onChange={(e) => setOtpMethod(e.target.value)}
-                    className="w-4 h-4 text-red-500 accent-red-500"
-                  />
-                  <span className="text-sm text-gray-700">Send Phone</span>
-                </label>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${
+                    otpStep === 2 ? "bg-red-500" : "bg-gray-300"
+                  }`}
+                >
+                  2
+                </div>
+                <span
+                  className={`text-sm ${
+                    otpStep === 2
+                      ? "text-gray-800 font-medium"
+                      : "text-gray-600"
+                  }`}
+                >
+                  Verify Phone
+                </span>
               </div>
             </div>
           </div>
