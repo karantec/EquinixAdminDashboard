@@ -1,182 +1,134 @@
 import { useState } from "react";
 
 function CabinetUpdates() {
-  const [updates, setUpdates] = useState([
+  const [updates] = useState([
     {
       id: 1,
-      engineerName: "Prudhvi raj",
-      previousDate: "14-11-2025",
-      previousEngineer: "Prudhvi",
-      updatedDate: "15-11-2025",
-      updatedEngineer: "Swasthik",
-      timestamp: "12:23:11 PM",
+      name: "Prudhvi raj",
+      time: "12:23:11 PM",
+      prevDate: "14-11-2025",
+      prevEng: "Prudhvi",
+      upDate: "15-11-2025",
+      upEng: "Swasthik",
       isToday: true,
+      isSelected: true,
     },
     {
       id: 2,
-      engineerName: "Prudhvi raj",
-      previousDate: "14-11-2025",
-      previousEngineer: "Prudhvi",
-      updatedDate: "15-11-2025",
-      updatedEngineer: "Swasthik",
-      timestamp: "12:23:11 PM",
+      name: "Prudhvi raj",
+      time: "12:23:11 PM",
+      prevDate: "14-11-205",
+      prevEng: "Prudhvi",
+      upDate: "15-11-205",
+      upEng: "Swasthik",
       isToday: true,
     },
     {
       id: 3,
-      engineerName: "Prudhvi raj",
-      previousDate: "14-11-2025",
-      previousEngineer: "Prudhvi",
-      updatedDate: "15-11-2025",
-      updatedEngineer: "Swasthik",
-      timestamp: "12:23:11 PM",
+      name: "Prudhvi raj",
+      time: "12:23:11 PM",
+      prevDate: "14-11-205",
+      prevEng: "Prudhvi",
+      upDate: "15-11-205",
+      upEng: "Swasthik",
       isToday: true,
     },
     {
       id: 4,
-      engineerName: "Prudhvi raj",
-      previousDate: "14-11-2025",
-      previousEngineer: "Prudhvi",
-      updatedDate: "15-11-2025",
-      updatedEngineer: "Swasthik",
-      timestamp: "12:23:11 PM",
+      name: "Prudhvi raj",
+      time: "12:23:11 PM",
+      prevDate: "14-11-205",
+      prevEng: "Prudhvi",
+      upDate: "15-11-205",
+      upEng: "Swasthik",
       isToday: true,
-    },
-    {
-      id: 5,
-      engineerName: "Prudhvi raj",
-      previousDate: "14-11-2025",
-      previousEngineer: "Prudhvi",
-      updatedDate: "15-11-2025",
-      updatedEngineer: "Swasthik",
-      timestamp: "12:23:11 PM",
-      isToday: false,
-    },
-    {
-      id: 6,
-      engineerName: "Prudhvi raj",
-      previousDate: "14-11-2025",
-      previousEngineer: "Prudhvi",
-      updatedDate: "15-11-2025",
-      updatedEngineer: "Swasthik",
-      timestamp: "12:23:11 PM",
-      isToday: false,
-    },
-    {
-      id: 7,
-      engineerName: "Prudhvi raj",
-      previousDate: "14-11-2025",
-      previousEngineer: "Prudhvi",
-      updatedDate: "15-11-2025",
-      updatedEngineer: "Swasthik",
-      timestamp: "12:23:11 PM",
-      isToday: false,
-    },
-    {
-      id: 8,
-      engineerName: "Prudhvi raj",
-      previousDate: "14-11-2025",
-      previousEngineer: "Prudhvi",
-      updatedDate: "15-11-2025",
-      updatedEngineer: "Swasthik",
-      timestamp: "12:23:11 PM",
-      isToday: false,
     },
   ]);
 
-  const [showDenyModal, setShowDenyModal] = useState(false);
-  const [showReasonModal, setShowReasonModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [denyReason, setDenyReason] = useState("");
-  const [selectedUpdateId, setSelectedUpdateId] = useState(null);
+  const renderCardGrid = (items) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-8">
+      {items.map((card) => (
+        <div
+          key={card.id}
+          className={`bg-white rounded-lg p-5 border-[1.5px] ${
+            card.isSelected ? "border-[#3B82F6]" : "border-gray-100 shadow-sm"
+          }`}
+        >
+          {/* Header */}
+          <div className="flex justify-between items-start mb-3">
+            <h3 className="text-xl font-bold text-[#333]">{card.name}</h3>
+            <span className="text-[10px] text-gray-400 font-medium">
+              {card.time}
+            </span>
+          </div>
 
-  const handleDeny = (id) => {
-    setSelectedUpdateId(id);
-    setShowDenyModal(true);
-  };
+          <div className="space-y-4">
+            {/* Previous Section */}
+            <div className="border-t border-gray-100 pt-3">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-sm text-gray-400">Previous:</span>
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-red-200">
+                  <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                </span>
+              </div>
+              <p className="text-[14px] font-bold text-[#222]">
+                Date: {card.prevDate}
+              </p>
+              <p className="text-[14px] font-bold text-[#222]">
+                Engineer Name: {card.prevEng}
+              </p>
+            </div>
 
-  const confirmDeny = () => {
-    setShowDenyModal(false);
-    setShowReasonModal(true);
-  };
-
-  const submitReason = () => {
-    if (denyReason.trim()) {
-      setShowReasonModal(false);
-      setShowDeleteModal(true);
-    }
-  };
-
-  const confirmDelete = () => {
-    setShowDeleteModal(false);
-    setShowSuccessModal(true);
-    setDenyReason("");
-    // Remove the update from the list
-    setUpdates(updates.filter((update) => update.id !== selectedUpdateId));
-    setTimeout(() => {
-      setShowSuccessModal(false);
-    }, 2000);
-  };
-
-  const handleApprove = (id) => {
-    // Handle approve logic
-    console.log("Approved update:", id);
-  };
-
-  const handleExportExcel = () => {
-    console.log("Exporting to Excel...");
-  };
-
-  const handleFilter = () => {
-    console.log("Opening filter...");
-  };
-
-  const todayUpdates = updates.filter((u) => u.isToday);
-  const yesterdayUpdates = updates.filter((u) => !u.isToday);
+            {/* Updated Section */}
+            <div className="border-t border-gray-100 pt-3">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-sm text-gray-400">Updated:</span>
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-green-200">
+                  <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                </span>
+              </div>
+              <p className="text-[14px] font-bold text-[#222]">
+                Date: {card.upDate}
+              </p>
+              <p className="text-[14px] font-bold text-[#222]">
+                Engineer Name: {card.upEng}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
-          Cabinet Updates
-        </h1>
-        <div className="flex gap-2">
-          <button
-            onClick={handleExportExcel}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm font-medium flex items-center gap-2"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
+    <div className="min-h-screen bg-[#F9FAFB] py-8">
+      {/* Top Header */}
+      <div className="flex justify-between items-center px-8 mb-4">
+        <h1 className="text-2xl font-semibold text-[#444]">Cabinet Updates</h1>
+        <div className="flex gap-3">
+          <button className="bg-[#EF4444] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md">
             View Excel File
           </button>
-          <button
-            onClick={handleFilter}
-            className="bg-white hover:bg-gray-50 text-red-500 border border-red-500 px-4 py-2 rounded text-sm font-medium flex items-center gap-2"
-          >
+          <button className="bg-white text-[#EF4444] border border-[#EF4444] px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-sm">
             <svg
-              className="w-4 h-4"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
               fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
+                d="M6.80065 5.54199H13.1923C13.7257 5.54199 14.159 5.97533 14.159 6.50866V7.57533C14.159 7.96699 13.9173 8.45033 13.6757 8.692L11.5923 10.5337C11.3007 10.7753 11.109 11.2587 11.109 11.6503V13.7337C11.109 14.0253 10.9173 14.4087 10.6757 14.5587L10.0007 14.9837C9.36732 15.3753 8.50065 14.9337 8.50065 14.1587V11.592C8.50065 11.2503 8.30898 10.817 8.10898 10.5753L6.26732 8.63367C6.02565 8.40033 5.83398 7.95866 5.83398 7.66699V6.55866C5.83398 5.97533 6.26732 5.54199 6.80065 5.54199Z"
+                stroke="#E92B2E"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+              />
+
+              <path
+                d="M7.50033 18.3337H12.5003C16.667 18.3337 18.3337 16.667 18.3337 12.5003V7.50033C18.3337 3.33366 16.667 1.66699 12.5003 1.66699H7.50033C3.33366 1.66699 1.66699 3.33366 1.66699 7.50033V12.5003C1.66699 16.667 3.33366 18.3337 7.50033 18.3337Z"
+                stroke="#E92B2E"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
             Filter
@@ -184,218 +136,29 @@ function CabinetUpdates() {
         </div>
       </div>
 
-      {/* Today's Updates */}
-      <div className="mb-6">
-        <div className="flex justify-end mb-2">
-          <span className="text-sm text-gray-600">Today (15-11-2024)</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {todayUpdates.map((update) => (
-            <div
-              key={update.id}
-              className="bg-white rounded-lg shadow-sm border border-blue-500 p-4"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-base font-semibold text-gray-800">
-                  {update.engineerName}
-                </h3>
-                <span className="text-xs text-gray-500">
-                  {update.timestamp}
-                </span>
-              </div>
-
-              <div className="space-y-2 mb-4">
-                <div>
-                  <div className="flex items-center gap-1 mb-1">
-                    <span className="text-xs text-gray-500">Previous</span>
-                    <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                  </div>
-                  <p className="text-xs text-gray-700">
-                    Date: {update.previousDate}
-                  </p>
-                  <p className="text-xs text-gray-700">
-                    Engineer Name: {update.previousEngineer}
-                  </p>
-                </div>
-
-                <div>
-                  <div className="flex items-center gap-1 mb-1">
-                    <span className="text-xs text-gray-500">Updated</span>
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  </div>
-                  <p className="text-xs text-gray-700">
-                    Date: {update.updatedDate}
-                  </p>
-                  <p className="text-xs text-gray-700">
-                    Engineer Name: {update.updatedEngineer}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleDeny(update.id)}
-                  className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded text-xs font-medium"
-                >
-                  Deny
-                </button>
-                <button
-                  onClick={() => handleApprove(update.id)}
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded text-xs font-medium"
-                >
-                  Approve
-                </button>
-              </div>
-            </div>
-          ))}
+      {/* Date Divider (Today) */}
+      <div className="relative mb-8 mt-12">
+        <div className="relative flex justify-end px-8">
+          <span className="bg-[#F9FAFB] pl-4 text-sm  text-gray-500">
+            Today (15-11-2024)
+          </span>
         </div>
       </div>
+      {renderCardGrid(updates.filter((u) => u.isToday))}
 
-      {/* Yesterday's Updates */}
-      <div>
-        <div className="flex justify-end mb-2">
-          <span className="text-sm text-gray-600">Yesterday (14-11-2024)</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {yesterdayUpdates.map((update) => (
-            <div
-              key={update.id}
-              className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="text-base font-semibold text-gray-800">
-                  {update.engineerName}
-                </h3>
-                <span className="text-xs text-gray-500">
-                  {update.timestamp}
-                </span>
-              </div>
-
-              <div className="space-y-2 mb-4">
-                <div>
-                  <div className="flex items-center gap-1 mb-1">
-                    <span className="text-xs text-gray-500">Previous</span>
-                    <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                  </div>
-                  <p className="text-xs text-gray-700">
-                    Date: {update.previousDate}
-                  </p>
-                  <p className="text-xs text-gray-700">
-                    Engineer Name: {update.previousEngineer}
-                  </p>
-                </div>
-
-                <div>
-                  <div className="flex items-center gap-1 mb-1">
-                    <span className="text-xs text-gray-500">Updated</span>
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  </div>
-                  <p className="text-xs text-gray-700">
-                    Date: {update.updatedDate}
-                  </p>
-                  <p className="text-xs text-gray-700">
-                    Engineer Name: {update.updatedEngineer}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleDeny(update.id)}
-                  className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded text-xs font-medium"
-                >
-                  Deny
-                </button>
-                <button
-                  onClick={() => handleApprove(update.id)}
-                  className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded text-xs font-medium"
-                >
-                  Approve
-                </button>
-              </div>
-            </div>
-          ))}
+      {/* Date Divider (Yesterday) */}
+      <div className="relative mb-8 mt-16">
+        <div
+          className="absolute inset-0 flex items-center px-8"
+          aria-hidden="true"
+        >
+          <div className="w-full border-t border-gray-300"></div>
         </div>
       </div>
-
-      {/* Deny Confirmation Modal */}
-      {showDenyModal && (
-        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-6">
-            <h3 className="text-base font-semibold text-gray-800 mb-4 text-center">
-              Are you sure want to denied?
-            </h3>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowDenyModal(false)}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded text-sm font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDeny}
-                className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded text-sm font-medium"
-              >
-                Deny
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Reason Modal */}
-      {showReasonModal && (
-        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-6">
-            <h3 className="text-base font-semibold text-gray-800 mb-4">
-              Add reason for denied
-            </h3>
-            <textarea
-              value={denyReason}
-              onChange={(e) => setDenyReason(e.target.value)}
-              className="w-full h-24 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 resize-none mb-4"
-              placeholder="Enter reason..."
-            />
-            <button
-              onClick={submitReason}
-              className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded text-sm font-medium"
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-6">
-            <h3 className="text-base font-semibold text-gray-800 mb-1 text-center">
-              Reason?
-            </h3>
-            <p className="text-sm text-gray-600 mb-4 text-center">
-              {denyReason}
-            </p>
-            <button
-              onClick={confirmDelete}
-              className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded text-sm font-medium"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-xs p-8">
-            <h3 className="text-lg font-semibold text-gray-800 text-center">
-              Request Cancelled Successfully!
-            </h3>
-          </div>
-        </div>
-      )}
+      <span className="bg-[#F9FAFB] pl-6 pt-3 text-sm  text-gray-400 block text-right">
+        Yesterday (14-11-2024)
+      </span>
+      {renderCardGrid(updates.filter((u) => !u.isToday))}
     </div>
   );
 }

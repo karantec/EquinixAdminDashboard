@@ -1,60 +1,131 @@
 import { useState } from "react";
 
-function InternalEngineer() {
-  const [credentials, setCredentials] = useState([
-    {
-      id: 1,
-      company: "Equinix",
-      username: "prudhvi9808",
-      password: "Prudhvi@125263",
-      email: "prudhvirajkundnani@gmail.com",
-      isEditing: false,
-    },
-    {
-      id: 2,
-      company: "Avocado Tech",
-      username: "prudhvi9808",
-      password: "Prudhvi@125263",
-      email: "prudhvirajkundnani@gmail.com",
-      isEditing: false,
-    },
-    {
-      id: 3,
-      company: "Avocado Tech",
-      username: "prudhvi9808",
-      password: "Prudhvi@125263",
-      email: "prudhvirajkundnani@gmail.com",
-      isEditing: false,
-    },
-    {
-      id: 4,
-      company: "Avocado Tech",
-      username: "prudhvi9808",
-      password: "Prudhvi@125263",
-      email: "prudhvirajkundnani@gmail.com",
-      isEditing: false,
-    },
-  ]);
+const initialCredentials = [
+  {
+    id: 1,
+    name: "Prudhvi Raj Kudumula",
+    username: "prudhvi9808",
+    password: "Prudhvi@12S263",
+    email: "prudhvirajkudumula@gmail.com",
+    phone: "+917993164156",
+    isEditing: false,
+  },
+  {
+    id: 2,
+    name: "Prudhvi Raj Kudumula",
+    username: "prudhvi9808",
+    password: "Prudhvi@12S263",
+    email: "prudhvirajkudumula@gmail.com",
+    phone: "+917993164156",
+    isEditing: false,
+  },
+  {
+    id: 3,
+    name: "Prudhvi Raj Kudumula",
+    username: "prudhvi9808",
+    password: "Prudhvi@12S263",
+    email: "prudhvirajkudumula@gmail.com",
+    phone: "+917993164156",
+    isEditing: false,
+  },
+  {
+    id: 4,
+    name: "Prudhvi Raj Kudumula",
+    username: "prudhvi9808",
+    password: "Prudhvi@12S263",
+    email: "prudhvirajkudumula@gmail.com",
+    phone: "+917993164156",
+    isEditing: false,
+  },
+];
 
+function EditIcon() {
+  return (
+    <svg
+      className="w-3.5 h-3.5"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+      />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      className="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg
+      className="w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M12 4v16m8-8H4"
+      />
+    </svg>
+  );
+}
+
+export default function InternalEngineer() {
+  const [credentials, setCredentials] = useState(initialCredentials);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [otpStep, setOtpStep] = useState(1); // Added missing state
+  const [otpStep, setOtpStep] = useState(1);
+  const [editingData, setEditingData] = useState({});
 
-  // Form state for new account creation
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
 
   const handleEdit = (id) => {
+    const cred = credentials.find((c) => c.id === id);
+    setEditingData({ ...cred });
     setCredentials(
-      credentials.map((cred) =>
-        cred.id === id ? { ...cred, isEditing: !cred.isEditing } : cred
-      )
+      credentials.map((c) => ({
+        ...c,
+        isEditing: c.id === id ? !c.isEditing : false,
+      })),
+    );
+  };
+
+  const handleSave = (id) => {
+    setCredentials(
+      credentials.map((c) =>
+        c.id === id ? { ...editingData, isEditing: false } : c,
+      ),
     );
   };
 
@@ -63,23 +134,19 @@ function InternalEngineer() {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-
       if (value && index < 5) {
-        const nextInput = document.getElementById(`otp-${index + 1}`);
-        if (nextInput) nextInput.focus();
+        document.getElementById(`otp-${index + 1}`)?.focus();
       }
     }
   };
 
   const handleOtpKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
-      if (prevInput) prevInput.focus();
+      document.getElementById(`otp-${index - 1}`)?.focus();
     }
   };
 
   const handleCreateSubmit = () => {
-    // Validate form
     if (
       !formData.name ||
       !formData.username ||
@@ -90,12 +157,10 @@ function InternalEngineer() {
       alert("Please fill in all fields");
       return;
     }
-
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-
     setShowCreateModal(false);
     setShowOtpModal(true);
     setOtpStep(1);
@@ -103,21 +168,24 @@ function InternalEngineer() {
 
   const handleOtpSubmit = () => {
     const otpCode = otp.join("");
-
     if (otpCode.length !== 6) {
       alert("Please enter complete OTP");
       return;
     }
-
-    console.log("OTP:", otpCode);
-
     if (otpStep === 1) {
-      // Move to phone verification
       setOtpStep(2);
       setOtp(["", "", "", "", "", ""]);
     } else {
-      // Complete verification
-      alert("Account created successfully!");
+      const newCred = {
+        id: credentials.length + 1,
+        name: formData.name,
+        username: formData.username,
+        email: formData.email,
+        phone: formData.phone || "N/A",
+        password: formData.password,
+        isEditing: false,
+      };
+      setCredentials([...credentials, newCred]);
       setShowOtpModal(false);
       setOtp(["", "", "", "", "", ""]);
       setOtpStep(1);
@@ -125,227 +193,194 @@ function InternalEngineer() {
         name: "",
         username: "",
         email: "",
+        phone: "",
         password: "",
         confirmPassword: "",
       });
     }
   };
 
-  const handleFormChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
-          Internal Engineer Management
+    <div className="min-h-screen ">
+      {/* Top Bar */}
+      <div className=" px-2 py-4 flex justify-between items-center">
+        <h1 className="text-lg font-semibold text-gray-900 tracking-tight">
+          Credentials Management
         </h1>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded text-sm font-medium flex items-center gap-2"
+          className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
         >
           Create New Account
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
+          <div className="w-5 h-5 bg-gray-700 rounded flex items-center justify-center">
+            <PlusIcon />
+          </div>
         </button>
       </div>
 
-      {/* Credentials Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Cards Grid */}
+      <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {credentials.map((cred) => (
           <div
             key={cred.id}
-            className={`bg-white rounded-lg shadow-md p-6 w-full ${
-              cred.id === 1
-                ? "border-2 border-blue-500"
-                : "border border-gray-200"
-            }`}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
           >
-            {/* Company Name */}
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              {cred.company}
-            </h3>
-            <hr className="mb-4" />
-
-            {/* Credentials Details */}
-            <div className="space-y-3 mb-6">
-              <div className="flex">
-                <span className="text-gray-400 text-sm w-24 flex-shrink-0">
-                  Username
-                </span>
-                <span className="text-gray-400 text-sm mr-2">:</span>
-                <span className="text-gray-800 text-sm font-medium">
-                  {cred.username}
-                </span>
-              </div>
-
-              <div className="flex">
-                <span className="text-gray-400 text-sm w-24 flex-shrink-0">
-                  Password
-                </span>
-                <span className="text-gray-400 text-sm mr-2">:</span>
-                <span className="text-gray-800 text-sm font-medium">
-                  {cred.password}
-                </span>
-              </div>
-
-              <div className="flex">
-                <span className="text-gray-400 text-sm w-24 flex-shrink-0">
-                  Email
-                </span>
-                <span className="text-gray-400 text-sm mr-2">:</span>
-                <span className="text-gray-800 text-sm font-medium break-all">
-                  {cred.email}
-                </span>
-              </div>
+            {/* Card Header */}
+            <div className="px-5 pt-5 pb-4">
+              <h3 className="text-base font-semibold text-gray-900 mb-4">
+                {cred.isEditing ? (
+                  <input
+                    className="w-full text-base font-semibold text-gray-900 border-b border-gray-300 focus:outline-none focus:border-red-400 bg-transparent"
+                    value={editingData.name}
+                    onChange={(e) =>
+                      setEditingData({ ...editingData, name: e.target.value })
+                    }
+                  />
+                ) : (
+                  cred.name
+                )}
+              </h3>
+              <hr className="border-gray-100" />
             </div>
 
-            {/* Edit Button */}
-            <div className="flex justify-end">
-              <button
-                onClick={() => handleEdit(cred.id)}
-                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center gap-2"
-              >
-                Edit
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            {/* Card Body */}
+            <div className="px-5 pb-2 space-y-2.5">
+              {[
+                { label: "Username", field: "username" },
+                { label: "Password", field: "password" },
+                { label: "Email", field: "email" },
+                { label: "Phone", field: "phone" },
+              ].map(({ label, field }) => (
+                <div key={field} className="flex items-start gap-1">
+                  <span className="text-gray-400 text-xs w-20 flex-shrink-0 pt-0.5">
+                    {label}
+                  </span>
+                  <span className="text-gray-400 text-xs mr-1">:</span>
+                  {cred.isEditing ? (
+                    <input
+                      className="text-xs text-gray-800 font-medium flex-1 border-b border-gray-200 focus:outline-none focus:border-red-400 bg-transparent"
+                      value={editingData[field]}
+                      onChange={(e) =>
+                        setEditingData({
+                          ...editingData,
+                          [field]: e.target.value,
+                        })
+                      }
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-800 font-medium break-all">
+                      {cred[field]}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Card Footer */}
+            <div className="px-5 py-4 flex justify-end">
+              {cred.isEditing ? (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() =>
+                      setCredentials(
+                        credentials.map((c) =>
+                          c.id === cred.id ? { ...c, isEditing: false } : c,
+                        ),
+                      )
+                    }
+                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 py-1.5 px-3 rounded-md text-xs font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleSave(cred.id)}
+                    className="bg-green-500 hover:bg-green-600 text-white py-1.5 px-3 rounded-md text-xs font-medium transition-colors"
+                  >
+                    Save
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => handleEdit(cred.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white py-1.5 px-4 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                  />
-                </svg>
-              </button>
+                  Edit <EditIcon />
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
 
-      {/* Create New Account Modal */}
+      {/* Create Account Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h2 className="text-2xl font-semibold text-red-600">
-                Create Internal engineer
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100">
+              <h2 className="text-xl font-semibold text-red-500">
+                Create Internal Engineer
               </h2>
               <button
                 onClick={() => setShowCreateModal(false)}
-                className="text-white bg-gray-500 hover:bg-gray-600 rounded-full p-1"
+                className="bg-gray-500 hover:bg-gray-600 text-white rounded-full p-1 transition-colors"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <CloseIcon />
               </button>
             </div>
 
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-xs text-gray-600 mb-1.5">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => handleFormChange("name", e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Karna"
-                  required
-                />
-              </div>
+            <div className="px-6 py-5 space-y-4">
+              {[
+                {
+                  label: "Name",
+                  field: "name",
+                  type: "text",
+                  placeholder: "Karna",
+                },
 
-              <div>
-                <label className="block text-xs text-gray-600 mb-1.5">
-                  User Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) => handleFormChange("username", e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="AVC793-34"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-gray-600 mb-1.5">
-                  Email ID
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleFormChange("email", e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="engineer@example.com"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-gray-600 mb-1.5">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => handleFormChange("password", e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Create a password"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-gray-600 mb-1.5">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    handleFormChange("confirmPassword", e.target.value)
-                  }
-                  className="w-full px-3 py-2.5 bg-gray-50 border-0 rounded text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Re-enter password"
-                  required
-                />
-              </div>
+                {
+                  label: "Email ID",
+                  field: "email",
+                  type: "email",
+                  placeholder: "engineer@example.com",
+                },
+                {
+                  label: "Phone",
+                  field: "phone",
+                  type: "tel",
+                  placeholder: "+91 00000 00000",
+                },
+                {
+                  label: "Password",
+                  field: "password",
+                  type: "password",
+                  placeholder: "Create a password",
+                },
+                {
+                  label: "Confirm Password",
+                  field: "confirmPassword",
+                  type: "password",
+                  placeholder: "Re-enter password",
+                },
+              ].map(({ label, field, type, placeholder }) => (
+                <div key={field}>
+                  <label className="block text-xs text-gray-500 mb-1.5 font-medium">
+                    {label}
+                  </label>
+                  <input
+                    type={type}
+                    value={formData[field]}
+                    onChange={(e) =>
+                      setFormData({ ...formData, [field]: e.target.value })
+                    }
+                    className="w-full px-3 py-2.5 bg-gray-50 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400 border border-transparent"
+                    placeholder={placeholder}
+                  />
+                </div>
+              ))}
 
               <button
                 onClick={handleCreateSubmit}
-                className="w-full bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded font-medium text-sm mt-4"
+                className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-medium text-sm transition-colors mt-2"
               >
                 Send OTP Code
               </button>
@@ -354,48 +389,31 @@ function InternalEngineer() {
         </div>
       )}
 
-      {/* OTP Verification Modal */}
+      {/* OTP Modal */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
-            {/* Header with Close Button */}
-            <div className="flex justify-between items-start mb-6">
-              <h2 className="text-2xl font-semibold text-red-500">
-                Verify OTP
-              </h2>
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8">
+            <div className="flex justify-between items-start mb-5">
+              <h2 className="text-xl font-semibold text-red-500">Verify OTP</h2>
               <button
                 onClick={() => {
                   setShowOtpModal(false);
                   setOtp(["", "", "", "", "", ""]);
                   setOtpStep(1);
                 }}
-                className="text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full p-1"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full p-1 transition-colors"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <CloseIcon />
               </button>
             </div>
 
-            {/* Description */}
-            <p className="text-sm text-gray-600 mb-8">
+            <p className="text-sm text-gray-500 mb-7">
               {otpStep === 1
-                ? "We will send 6 digits of OTP to your email id prudhviraj*****.com"
-                : "We will send 6 digits of OTP to your phone 181 7868****56"}
+                ? `We will send 6 digits of OTP to your email ${formData.email.replace(/(?<=.{3}).(?=.*@)/g, "*")}`
+                : `We will send 6 digits of OTP to your phone ${formData.phone}`}
             </p>
 
-            {/* OTP Input Boxes */}
-            <div className="flex justify-center gap-3 mb-6">
+            <div className="flex justify-center gap-2 mb-5">
               {otp.map((digit, index) => (
                 <input
                   key={index}
@@ -405,66 +423,47 @@ function InternalEngineer() {
                   value={digit}
                   onChange={(e) => handleOtpChange(index, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  className="w-14 h-14 text-center text-2xl font-semibold bg-gray-100 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-800"
-                  required
+                  className="w-12 h-12 text-center text-xl font-semibold bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 text-gray-800"
                 />
               ))}
             </div>
 
-            {/* Resend OTP */}
-            <div className="text-right mb-6">
-              <button
-                type="button"
-                className="text-sm text-red-500 hover:text-red-600 font-medium"
-              >
+            <div className="text-right mb-5">
+              <button className="text-sm text-red-500 hover:text-red-600 font-medium">
                 Resend OTP?
               </button>
             </div>
 
-            {/* Submit Button */}
             <button
               onClick={handleOtpSubmit}
-              className="w-full bg-red-500 hover:bg-red-600 text-white py-3.5 px-4 rounded-lg font-medium text-base mb-6"
+              className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-medium text-sm transition-colors mb-6"
             >
               Enter OTP
             </button>
 
             {/* Step Indicators */}
-            <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center justify-center gap-4">
               <div className="flex items-center gap-2">
                 <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${
-                    otpStep === 1 ? "bg-red-500" : "bg-green-500"
-                  }`}
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${otpStep === 1 ? "bg-red-500" : "bg-green-500"}`}
                 >
                   {otpStep === 1 ? "1" : "✓"}
                 </div>
                 <span
-                  className={`text-sm ${
-                    otpStep === 1
-                      ? "text-gray-800 font-medium"
-                      : "text-gray-600"
-                  }`}
+                  className={`text-xs ${otpStep === 1 ? "text-gray-900 font-medium" : "text-gray-400"}`}
                 >
                   Verify Email
                 </span>
-                <span className="text-gray-400">-----&gt;</span>
               </div>
-
+              <span className="text-gray-300 text-xs">———›</span>
               <div className="flex items-center gap-2">
                 <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${
-                    otpStep === 2 ? "bg-red-500" : "bg-gray-300"
-                  }`}
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold ${otpStep === 2 ? "bg-red-500" : "bg-gray-300"}`}
                 >
                   2
                 </div>
                 <span
-                  className={`text-sm ${
-                    otpStep === 2
-                      ? "text-gray-800 font-medium"
-                      : "text-gray-600"
-                  }`}
+                  className={`text-xs ${otpStep === 2 ? "text-gray-900 font-medium" : "text-gray-400"}`}
                 >
                   Verify Phone
                 </span>
@@ -476,5 +475,3 @@ function InternalEngineer() {
     </div>
   );
 }
-
-export default InternalEngineer;

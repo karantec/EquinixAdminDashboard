@@ -21,10 +21,10 @@ function PageContent() {
   }, [pageTitle]);
 
   return (
-    <div className="drawer-content flex flex-col ">
+    <div className="drawer-content flex flex-col bg-gray-50 ">
       <Header />
       <main
-        className="flex-1 overflow-y-auto md:pt-4 pt-4 px-6 "
+        className="flex-1 overflow-y-auto md:pt-4 pt-4 px-6  "
         ref={mainContentRef}
       >
         <Suspense fallback={<SuspenseContent />}>

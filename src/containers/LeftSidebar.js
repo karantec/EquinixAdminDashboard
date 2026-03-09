@@ -1,5 +1,5 @@
 import routes from "../routes/sidebar";
-import { NavLink, Routes, Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import SidebarSubmenu from "./SidebarSubmenu";
 import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon";
 import { useDispatch } from "react-redux";
@@ -8,74 +8,90 @@ function LeftSidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
 
-  const close = (e) => {
+  const close = () => {
     document.getElementById("left-sidebar-drawer").click();
   };
 
   return (
-    <div className="drawer-side z-30">
-      <label htmlFor="left-sidebar-drawer" className="drawer-overlay"></label>
-      <ul className="menu pt-2 w-80 bg-white min-h-full text-gray-600 shadow-lg">
+    <div className="drawer-side z-40">
+      <label
+        htmlFor="left-sidebar-drawer"
+        className="drawer-overlay"
+        onClick={close}
+      ></label>
+
+      {/* Sidebar Container */}
+      <aside
+        className="flex flex-col h-full bg-white border-r border-gray-200 w-72 min-h-screen"
+        style={{ width: "350px", minHeight: "100vh" }}
+      >
+        {/* Close button for mobile */}
         <button
-          className="btn btn-ghost btn-circle z-50 top-0 right-0 mt-4 mr-2 absolute lg:hidden"
-          onClick={() => close()}
+          className="btn btn-ghost btn-circle absolute top-3 right-3 lg:hidden"
+          onClick={close}
         >
-          <XMarkIcon className="h-5 inline-block w-5" />
+          <XMarkIcon className="h-5 w-5 text-gray-500" />
         </button>
 
         {/* Logo Section */}
-        <li className="mb-8 mt-2">
-          <Link
-            to={"/app/welcome"}
-            className="flex items-center gap-3 hover:bg-transparent"
-          >
-            <img className="w-8 h-8" src="/Group.png" alt="Logo" />
-            <span className="text-xl font-semibold text-gray-800">EQUINIX</span>
-          </Link>
-        </li>
+        <div className="border-b border-gray-200">
+          <div className="flex items-center gap-2 px-5 pt-6 pb-5">
+            <img
+              src="/equi.png"
+              alt="Equinix Logo"
+              style={{ height: "28px", width: "auto", objectFit: "contain" }}
+            />
+          </div>
+        </div>
 
         {/* Menu Label */}
-        <li className="px-4 mb-3">
-          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-            MENU
-          </span>
-        </li>
+        <div
+          className="px-5 pt-3 pb-2"
+          style={{
+            fontSize: "14px",
+            fontWeight: "400",
+            letterSpacing: "0.1em",
+            marginLeft: "1rem",
+            color: "#999",
+            fontFamily: "sans-serif",
+          }}
+        >
+          MENU
+        </div>
 
-        {/* Menu Items */}
-        {routes.map((route, k) => {
-          return (
-            <li className="mb-1" key={k}>
-              {route.submenu ? (
-                <SidebarSubmenu {...route} />
-              ) : (
-                <NavLink
-                  end
-                  to={route.path}
-                  className={({ isActive }) =>
-                    `group flex items-center gap-3 px-4 py-3 rounded-lg mx-2 transition-all duration-200
-      ${
-        isActive
-          ? "bg-red-500 shadow-md hover:bg-red-600 text-white"
-          : "text-gray-700 hover:bg-red-500 hover:text-white"
-      }
-    `
-                  }
-                >
-                  {/* icon */}
-                  <span className="text-lg transition-all group-hover:text-white">
-                    {route.icon}
-                  </span>
+        {/* Nav Items */}
+        <nav className="flex flex-col gap-0.5 px-6 flex-1">
+          {routes.map((route, k) => {
+            return (
+              <div key={k}>
+                {route.submenu ? (
+                  <SidebarSubmenu {...route} />
+                ) : (
+                  <NavLink
+                    to={route.path}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 mt-2 px-3 py-3 rounded-md text-sm font-medium transition-all duration-150 ${
+                        isActive
+                          ? "bg-red-600 text-white shadow-md"
+                          : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      }`
+                    }
+                    style={{ fontFamily: "sans-serif", textDecoration: "none" }}
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="h-5 w-5 flex-shrink-0">
+                        {route.icon}
+                      </span>
 
-                  {/* label */}
-                  <span className="text-sm transition-all group-hover:text-white">
-                    {route.name}
-                  </span>
-                </NavLink>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+                      <span className="mt-[2px]">{route.name}</span>
+                    </span>
+                  </NavLink>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+      </aside>
     </div>
   );
 }

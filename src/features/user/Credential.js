@@ -43,8 +43,8 @@ function Credential() {
   const handleEdit = (id) => {
     setCredentials(
       credentials.map((cred) =>
-        cred.id === id ? { ...cred, isEditing: !cred.isEditing } : cred
-      )
+        cred.id === id ? { ...cred, isEditing: !cred.isEditing } : cred,
+      ),
     );
   };
 
@@ -80,7 +80,7 @@ function Credential() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen   sm:p-6 lg:p-4">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
